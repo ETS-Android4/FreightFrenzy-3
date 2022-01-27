@@ -43,18 +43,18 @@ public class Team7593TeleOp extends Team7593OpMode {
         super.init();
 
         //stop the motor(s) and reset the motor encoders to 0
-        robot.out.setPower(0);
-        robot.up.setPower(0);
+        robot.linearSlide.setPower(0);
+        robot.arm.setPower(0);
 
-        robot.claw.setPosition(0);
+        //robot.claw.setPosition(0);
 
-        robot.up.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        robot.up.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         //get the starting encoder value of tilt (this is so we don't assume the starting econder value is 0)
-        oEncoderVal = robot.up.getCurrentPosition();
-        oldEncoderVal = robot.out.getCurrentPosition();
+        oEncoderVal = robot.arm.getCurrentPosition();
+        oldEncoderVal = robot.linearSlide.getCurrentPosition();
 
         telemetry.addData("Say", "HELLO FROM THE OTHER SIIIIIDE");
 
@@ -62,35 +62,38 @@ public class Team7593TeleOp extends Team7593OpMode {
 
     public void loop() {
 
-        //use super's loop so that auton steps can run
+        //use sarmer's loop so that auton steps can run
         super.loop();
 
         //get the current encoder value of tilt
-        cEncoderVal = robot.up.getCurrentPosition();
-        currEncoderVal = robot.out.getCurrentPosition();
+        cEncoderVal = robot.arm.getCurrentPosition();
+        currEncoderVal = robot.linearSlide.getCurrentPosition();
 
-        double leftX, rightX, leftY, out, up, outPower, upPower; //declaration for the game sticks + power
-        boolean slow, slow1, slowDrive, slowDrive2, spin; //declaration for the buttons/bumpers
+        double leftX, rightX, leftY, linearSlide, arm, linearSlidePower, armPower; //declaration for the game sticks + power
+        boolean slow, slow1, slowDrive, slowDrive2, duckRight, duckLeft, boxRight, boxLeft; //declaration for the buttons/bumpers
         WheelSpeeds speeds; //variable to hold speeds
 
-        leftX = gamepad1.left_stick_x;
-        rightX = gamepad1.right_stick_x;
-        leftY = gamepad1.left_stick_y;
-        slowDrive = gamepad1.left_bumper;
-        slowDrive2 = gamepad1.right_bumper;
+        leftX = gamepad1.left_stick_x; //must keep
+        rightX = gamepad1.right_stick_x; //must keep
+        leftY = gamepad1.left_stick_y; //must keep
+        slowDrive = gamepad1.left_bumper; //must keep
+        slowDrive2 = gamepad1.right_bumper; //must keep
         slow = gamepad2.right_bumper;
         slow1 = gamepad2.left_bumper;
-        up = gamepad2.left_stick_y;
-        out = gamepad2.right_stick_y;
-        spin = gamepad2.x;
+        arm = gamepad2.left_stick_y;
+        linearSlide = gamepad2.right_stick_y;
+        duckRight = gamepad2.x;
+        duckLeft = gamepad2.b;
+        boxRight = gamepad2.y;
+        boxLeft = gamepad2.a;
 
-        upPower = up*.75;
-        outPower = out*.75;
+        armPower = arm*.75;
+        linearSlidePower = linearSlide*.75;
 
-        if(spin){
-            robot.spin1.setPower(-1);
-            robot.spin2.setPower(1);
-        }
+//        if(spin){
+//            robot.spin1.setPower(-1);
+//            robot.spin2.setPower(1);
+//        }
 
         //get the speeds
         if(slowDrive || slowDrive2){
@@ -102,45 +105,61 @@ public class Team7593TeleOp extends Team7593OpMode {
         //power the motors
         robot.powerTheWheels(speeds);
 
-        if(gamepad2.a){
-            robot.claw.setPosition(.7);
-        }else if(gamepad2.b){
-            robot.claw.setPosition(0);
+//        if(gamepad2.a){
+//            robot.claw.setPosition(.7);
+//        }else if(gamepad2.b){
+//            robot.claw.setPosition(0);
+//        }
+
+        if(duckRight){
+            robot.duck.setPower(1);
+        }
+
+        if(duckLeft){
+            robot.duck.setPower(-1);
+        }
+
+        if(boxRight){
+            robot.box.setPower(1);
+        }
+
+        if(boxLeft){
+            robot.box.setPower(-1);
         }
 
 
         if(slow || slow1){
-            upPower = up*.5;
-            outPower = out*.5;
+            armPower = arm*.5;
+            linearSlidePower = linearSlide*.5;
         }
 
         //recursive encoder loop to the keep the tilt motor still-ish
-        if (up > 0) {
-            if (robot.up.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
-                robot.up.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (arm > 0) {
+            if (robot.arm.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+                robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-            robot.up.setPower(upPower);
+            robot.arm.setPower(armPower);
             oldEncoderVal = currEncoderVal;
-        } else if (up < 0) {
-            if (robot.up.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
-                robot.up.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        } else if (arm < 0) {
+            if (robot.arm.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+                robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
-            robot.up.setPower(upPower);
+            robot.arm.setPower(armPower);
             oldEncoderVal = currEncoderVal;
         } else {
-            if (robot.up.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-                robot.up.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if (robot.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+                robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-            robot.up.setTargetPosition(oldEncoderVal);
-            robot.up.setPower(0.05);
+            robot.arm.setTargetPosition(oldEncoderVal);
+            robot.arm.setPower(0.05);
         }
 
-        if (out > 0) {
-            robot.out.setPower(outPower);
-        } else if (up < 0) {
-            robot.out.setPower(outPower);
+        if (linearSlide > 0) {
+            robot.linearSlide.setPower(linearSlidePower);
+        } else if (arm < 0) {
+            robot.linearSlide.setPower(linearSlidePower);
         } else {
-            robot.out.setPower(0);
+            robot.linearSlide.setPower(0);
         }
 
 
