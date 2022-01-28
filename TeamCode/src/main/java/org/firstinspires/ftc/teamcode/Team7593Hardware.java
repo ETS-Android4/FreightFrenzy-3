@@ -22,14 +22,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class Team7593Hardware{
 
     //declare motors
-    public DcMotor motorFrontRight;
-    public DcMotor motorFrontLeft;
-    public DcMotor motorRearRight;
-    public DcMotor motorRearLeft;
-    public DcMotor arm;
-    public DcMotor duck;
-    public DcMotor box;
-    public DcMotor linearSlide;
+    public DcMotor motorFrontRight = null;
+    public DcMotor motorFrontLeft = null;
+    public DcMotor motorRearRight = null;
+    public DcMotor motorRearLeft = null;
+    public DcMotor arm = null;
+    public DcMotor duck = null;
+    public DcMotor box = null;
+    public DcMotor linearSlide = null;
 
     //declare servos
 
@@ -93,7 +93,7 @@ public class Team7593Hardware{
         //Define and initialize sensors
         //color = hwMap.get(NormalizedColorSensor.class, "sensor_color");
 
-        imu = hwMap.get(BNO055IMU.class, "imu 1");
+        imu = hwMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
 

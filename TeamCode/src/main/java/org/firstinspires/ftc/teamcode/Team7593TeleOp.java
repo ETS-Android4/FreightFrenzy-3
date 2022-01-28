@@ -52,13 +52,19 @@ public class Team7593TeleOp extends Team7593OpMode {
 
         robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        robot.linearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.linearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         //get the starting encoder value of tilt (this is so we don't assume the starting econder value is 0)
         oEncoderVal = robot.arm.getCurrentPosition();
         oldEncoderVal = robot.linearSlide.getCurrentPosition();
 
+
         telemetry.addData("Say", "HELLO FROM THE OTHER SIIIIIDE");
 
     }
+
 
     public void loop() {
 
@@ -102,6 +108,7 @@ public class Team7593TeleOp extends Team7593OpMode {
             speeds = WheelSpeeds.mecanumDrive(leftX, leftY, rightX, false);
         }
 
+
         //power the motors
         robot.powerTheWheels(speeds);
 
@@ -113,18 +120,26 @@ public class Team7593TeleOp extends Team7593OpMode {
 
         if(duckRight){
             robot.duck.setPower(1);
+        } else {
+            robot.duck.setPower(0);
         }
 
         if(duckLeft){
             robot.duck.setPower(-1);
+        } else {
+            robot.duck.setPower(0);
         }
 
         if(boxRight){
             robot.box.setPower(1);
+        } else {
+            robot.box.setPower(0);
         }
 
         if(boxLeft){
             robot.box.setPower(-1);
+        } else {
+            robot.box.setPower(0);
         }
 
 
@@ -139,28 +154,51 @@ public class Team7593TeleOp extends Team7593OpMode {
                 robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
             robot.arm.setPower(armPower);
-            oldEncoderVal = currEncoderVal;
+            oEncoderVal = cEncoderVal;
         } else if (arm < 0) {
             if (robot.arm.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
                 robot.arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
             robot.arm.setPower(armPower);
-            oldEncoderVal = currEncoderVal;
+            oEncoderVal = cEncoderVal;
         } else {
             if (robot.arm.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+                robot.arm.setTargetPosition(oEncoderVal);
                 robot.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
-            robot.arm.setTargetPosition(oldEncoderVal);
+            //robot.arm.setTargetPosition(oEncoderVal);
             robot.arm.setPower(0.05);
         }
 
+        //recursive encoder loop to the keep the tilt motor still-ish
         if (linearSlide > 0) {
-            robot.linearSlide.setPower(linearSlidePower);
-        } else if (arm < 0) {
-            robot.linearSlide.setPower(linearSlidePower);
+            if (robot.linearSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+                robot.linearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            robot.linearSlide.setPower(armPower);
+            oldEncoderVal = currEncoderVal;
+        } else if (linearSlide < 0) {
+            if (robot.linearSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+                robot.linearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            robot.linearSlide.setPower(armPower);
+            oldEncoderVal = currEncoderVal;
         } else {
-            robot.linearSlide.setPower(0);
+            if (robot.linearSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+                robot.linearSlide.setTargetPosition(oldEncoderVal);
+                robot.linearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+            //robot.linearSlide.setTargetPosition(oldEncoderVal);
+            robot.linearSlide.setPower(0.05);
         }
+
+//        if (linearSlide > 0) {
+//            robot.linearSlide.setPower(linearSlidePower);
+//        } else if (arm < 0) {
+//            robot.linearSlide.setPower(linearSlidePower);
+//        } else {
+//            robot.linearSlide.setPower(0);
+//        }
 
 
         //use the imu
