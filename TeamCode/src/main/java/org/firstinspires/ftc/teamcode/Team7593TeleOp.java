@@ -118,13 +118,10 @@ public class Team7593TeleOp extends Team7593OpMode {
 //            robot.claw.setPosition(0);
 //        }
 
+
         if(duckRight){
             robot.duck.setPower(1);
-        } else {
-            robot.duck.setPower(0);
-        }
-
-        if(duckLeft){
+        } else if (duckLeft) {
             robot.duck.setPower(-1);
         } else {
             robot.duck.setPower(0);
@@ -132,11 +129,7 @@ public class Team7593TeleOp extends Team7593OpMode {
 
         if(boxRight){
             robot.box.setPower(1);
-        } else {
-            robot.box.setPower(0);
-        }
-
-        if(boxLeft){
+        } else if(boxLeft){
             robot.box.setPower(-1);
         } else {
             robot.box.setPower(0);
@@ -171,26 +164,36 @@ public class Team7593TeleOp extends Team7593OpMode {
         }
 
         //recursive encoder loop to the keep the tilt motor still-ish
-        if (linearSlide > 0) {
-            if (robot.linearSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
-                robot.linearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            robot.linearSlide.setPower(armPower);
-            oldEncoderVal = currEncoderVal;
-        } else if (linearSlide < 0) {
-            if (robot.linearSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
-                robot.linearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            robot.linearSlide.setPower(armPower);
-            oldEncoderVal = currEncoderVal;
-        } else {
-            if (robot.linearSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
-                robot.linearSlide.setTargetPosition(oldEncoderVal);
-                robot.linearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            //robot.linearSlide.setTargetPosition(oldEncoderVal);
-            robot.linearSlide.setPower(0.05);
-        }
+//        if (linearSlide > 0) {
+//            telemetry.addData("Say", "linearSlide is greater than 0");
+//            if (robot.linearSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+//                robot.linearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            }
+//            robot.linearSlide.setPower(linearSlidePower);
+//
+//            telemetry.addData("Say", "linearSlide set power");
+//
+//            oldEncoderVal = currEncoderVal;
+//        } else if (linearSlide < 0) {
+//            telemetry.addData("Say", "linearSlide is less than 0");
+//            if (robot.linearSlide.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+//                robot.linearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            }
+//            robot.linearSlide.setPower(linearSlidePower);
+//
+//            telemetry.addData("Say", "linearSlide set power");
+//
+//            oldEncoderVal = currEncoderVal;
+//        } else {
+//            telemetry.addData("Say", "linearSlide should be still");
+//            if (robot.linearSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+//                robot.linearSlide.setTargetPosition(oldEncoderVal);
+//                robot.linearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            }
+//            //robot.linearSlide.setTargetPosition(oldEncoderVal);
+//            robot.linearSlide.setPower(0.05);
+//        }
+
 
 //        if (linearSlide > 0) {
 //            robot.linearSlide.setPower(linearSlidePower);

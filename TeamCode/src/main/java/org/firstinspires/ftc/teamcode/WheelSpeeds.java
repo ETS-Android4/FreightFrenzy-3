@@ -44,9 +44,7 @@ public class WheelSpeeds
         if(slow){
             desiredSpeed = desiredSpeed * 0.35;
             rotationSpeed = rotationSpeed * 0.35;
-        }else{
-
-        }
+        }else{ }
 
         //mecanum wheel formulas
         wheelSpeeds.v_lf = -(desiredSpeed * Math.sin(direction + Math.PI / 4) + rotationSpeed);
